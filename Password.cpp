@@ -1,9 +1,10 @@
 #include "Password.h"
 
-int Password::ContainsDigits() {
-  for (char c: m_password)
-    if (isdigit(c)) return 1;
-  return 0;
+int has_digit(const std::string& str) { // TODO: bool
+    for (char c : str) {
+        if (isdigit(c)) { return true; }
+    }
+  return false;
 }
 
 int Password::ContainsUpperCase() {
@@ -142,7 +143,7 @@ void Password::FindAbcPatterns(bool backwards) {
 
 Password::Password(const std::string& password, std::size_t min_pattern_len):
   m_password(password), m_min_pattern_len(min_pattern_len) {
-  m_digits = ContainsDigits();
+  m_digit = has_digit(password);
   m_lower_case = ContainsLowerCase();
   m_upper_case = ContainsUpperCase();
   m_count_special_chars = CountSpecialChars();
@@ -156,6 +157,6 @@ Password::Password(const std::string& password, std::size_t min_pattern_len):
   for(std::string str: m_pattern_set) m_pattern_string += str + ", ";
   if (m_pattern_string.size()!=0)
     m_pattern_string.erase(m_pattern_string.size()-2, m_pattern_string.size());
-   m_score = m_digits + m_lower_case + m_upper_case
+   m_score = m_digit + m_lower_case + m_upper_case
      + m_count_special_chars + m_password.size()/8 - m_pattern_set.size();
 }
