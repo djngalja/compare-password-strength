@@ -1,98 +1,51 @@
 #include "Table.h"
 
-void Table::SplitStringIntoPasswords(const std::string& str) {
-  std::string temp_string;
-  for (char c: str) {
-    if (!isspace(c))
-      temp_string.push_back(c);
-    else {
-      if (!temp_string.empty()) {
-        Password temp_obj(temp_string);
-        m_passwords.push_back(temp_obj);
-        temp_string.clear();
-      }
+void Table::add_column(const std::string& header, std::size_t width) {
+    std::size_t final_width = (header.size() > width) ? header.size() : width;
+    columns.push_back(Column{header, final_width});
+    if (table_width) { table_width++; };
+    table_width += final_width;
+    border = edge_style + std::string(table_width, hor_border_style) + edge_style + '\n';
+}
+
+void Table::add_row() {
+    // If the number of cells is less than the number of columns
+    if (temp_vec.size() < columns.size()) {
+        std::size_t diff = columns.size() - temp_vec.size();
+        while (diff--) {
+            temp_vec.push_back("");
+        }
     }
-  }
-    if (!temp_string.empty()) {
-      Password temp_obj(temp_string);
-      m_passwords.push_back(temp_obj);
-  }
+    rows.push_back(temp_vec);
+    temp_vec.clear();
 }
 
-void Table::MakeLongestWordVector() {
-  m_longest_words = m_headers;
-  std::string longest_password(m_headers[1]);
-  std::string longest_pattern(m_headers[7]);
-  for (Password password: m_passwords) {
-    if (longest_password.size() < password.m_password.size())
-      longest_password = password.m_password;
-    if (longest_pattern.size() < password.m_pattern_string.size())
-      longest_pattern = password.m_pattern_string;
-  }
-  m_longest_words[1] = longest_password;
-  m_longest_words[7] = longest_pattern;
-}
-
-template<typename T>
-std::string Table::MakeCell(
-  T current_word, const std::string& longest_word, bool contains
-) {
-  std::ostringstream oss;
-  oss << current_word;
-  std::string cell = oss.str();
-  if (contains) {
-    if (cell=="1") cell = "+";
-    else cell = " ";
-  }
-  cell.resize(longest_word.size(), ' ');
-  cell += " | ";
-  return cell;
-}
-
-void Table::PrintHeaders() {
-  std::cout << " | ";
-  for (std::size_t i=0; i<m_headers.size(); i++) {
-    if (i==1 || i==7)
-      std::cout << MakeCell(m_headers[i], m_longest_words[i]);
-    else
-      std::cout << m_headers[i] << " | ";
-  }
-  std::cout << std::endl;
-}
-
-void Table::PrintBorder(char c) {
-  std::cout << " ";
-  for (std::string word: m_longest_words) {
-    std::string border("+");
-    border.resize(word.size()+3, c);
+void Table::print_border() const {
     std::cout << border;
-  }
-  std::cout << "+" << std::endl;
 }
 
-Table::Table(const std::string& str) {
-  SplitStringIntoPasswords(str);
-  MakeLongestWordVector();
+void Table::print_headers() const {
+    std::string headers;
+    for (const auto& column : columns) {
+        headers += vert_border_style + std::string(column.width-column.header.size(), ' ') + column.header;
+    }
+    headers += vert_border_style;
+    headers += '\n';
+    std::cout << headers;
 }
 
-void Table::PrintTable() {
-  std::sort(m_passwords.begin(), m_passwords.end(), [](Password a, Password b){return a.m_score > b.m_score;});
-  PrintBorder();
-  PrintHeaders();
-  PrintBorder();
-  for (std::size_t i=0; i<m_passwords.size(); i++) {
-    std::cout << " | "
-    << MakeCell(m_passwords[i].m_score, m_longest_words[0])
-    << MakeCell(m_passwords[i].m_password, m_longest_words[1])
-    << MakeCell(m_passwords[i].m_password.size(), m_longest_words[2])
-    << MakeCell(m_passwords[i].m_count_special_chars, m_longest_words[3])
-    << MakeCell(m_passwords[i].m_digits, m_longest_words[4], true)
-    << MakeCell(m_passwords[i].m_lower_case, m_longest_words[5], true)
-    << MakeCell(m_passwords[i].m_upper_case, m_longest_words[6], true)
-    << MakeCell(m_passwords[i].m_pattern_string, m_longest_words[7])
-    << std::endl;
-    if (i != m_passwords.size()-1)
-      PrintBorder('-');
-  }
-  PrintBorder();
+void Table::print_rows() {
+    for (auto& row : rows) {
+        std::string row_str;
+        for (std::size_t i=0; i<columns.size(); ++i) {
+            // If the width of a cell is greater than the width of its column
+            if (row[i].size() > columns[i].width) {
+                row[i].resize(columns[i].width);
+            }
+            row_str += vert_border_style + std::string(columns[i].width-row[i].size(), ' ') + row[i];
+        }
+    row_str += vert_border_style;
+    row_str += '\n';
+    std::cout << row_str;
+    }
 }
