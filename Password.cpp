@@ -1,29 +1,32 @@
 #include "Password.h"
 
-int has_digit(const std::string& str) { // TODO: bool
+bool has_digit(const std::string& str) {
     for (char c : str) {
         if (isdigit(c)) { return true; }
     }
-  return false;
+    return false;
 }
 
-int Password::ContainsUpperCase() {
-  for (char c: m_password)
-    if (isupper(c)) return 1;
-  return 0;
+bool has_u_case(const std::string& str) {
+    for (char c : str) {
+        if (isupper(c)) { return true; }
+  }
+    return false;
 }
 
-int Password::ContainsLowerCase() {
-  for (char c: m_password)
-    if (islower(c)) return 1;
-  return 0;
+bool has_l_case(const std::string& str) {
+    for (char c : str) {
+        if (islower(c)) { return true; }
+  }
+    return false;
 }
 
-int Password::CountSpecialChars() {
-  int counter = 0;
-  for (char c: m_password)
-    if (!isalnum(c)) counter++;
-  return counter;
+int cnt_sp_chars(const std::string& str) {
+    int cnt {};
+    for (char c : str) {
+        if (!isalnum(c)) { cnt++; }
+    }
+    return cnt;
 }
 
 //find such patterns as 'qwErtY', 'ADMIN', etc.
@@ -141,22 +144,32 @@ void Password::FindAbcPatterns(bool backwards) {
   }
 }
 
-Password::Password(const std::string& password, std::size_t min_pattern_len):
-  m_password(password), m_min_pattern_len(min_pattern_len) {
-  m_digit = has_digit(password);
-  m_lower_case = ContainsLowerCase();
-  m_upper_case = ContainsUpperCase();
-  m_count_special_chars = CountSpecialChars();
-  if (m_password.size() >= m_min_pattern_len && m_min_pattern_len >= 2) {
-    FindCommonPatterns();
-    FindRepeatingChars();
-    FindRepeatingPairs();
-    FindAbcPatterns();
-    FindAbcPatterns(true);
-  }
-  for(std::string str: m_pattern_set) m_pattern_string += str + ", ";
-  if (m_pattern_string.size()!=0)
-    m_pattern_string.erase(m_pattern_string.size()-2, m_pattern_string.size());
-   m_score = m_digit + m_lower_case + m_upper_case
-     + m_count_special_chars + m_password.size()/8 - m_pattern_set.size();
+std::string Password::get_patterns() const {
+    std::string patterns;
+    for(const auto& pat : m_pattern_set) {
+        patterns += pat + ", ";
+    }
+    if (!patterns.empty()) {
+        patterns.erase(patterns.size()-2, patterns.size());
+    }
+    return patterns;
+}
+
+int Password::get_score() const {
+    return m_digit + m_lower_case + m_upper_case
+     + m_num_sp_chars + m_password.size()/8 - m_pattern_set.size();
+}
+
+Password::Password(const std::string& password): m_password(password) {
+    m_digit = has_digit(password);
+    m_lower_case = has_l_case(password);
+    m_upper_case = has_u_case(password);
+    m_num_sp_chars = cnt_sp_chars(password);
+    if (m_password.size() >= m_min_pattern_len) {
+        FindCommonPatterns();
+        FindRepeatingChars();
+        FindRepeatingPairs();
+        FindAbcPatterns();
+        FindAbcPatterns(true);
+    }
 }
