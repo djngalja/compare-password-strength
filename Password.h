@@ -6,30 +6,33 @@
 #include <unordered_set>
 
 class Password {
-    public:
-  std::string m_password;
-  int m_count_special_chars;
-  bool m_digit;
-  int m_lower_case;
-  int m_upper_case;
-  std::size_t m_min_pattern_len;
-  std::unordered_set<std::string> m_pattern_set;
-  std::string m_pattern_string;
-  int m_score;
+    std::string m_password;
+    bool m_digit {};
+    bool m_lower_case {};
+    bool m_upper_case {};
+    int m_num_sp_chars {};
+    std::size_t m_min_pattern_len {4};
+    std::unordered_set<std::string> m_pattern_set {};
+public:
+    void FindCommonPatterns();
+    void FindRepeatingChars();
+    void FindRepeatingPairs();
+    void FindAbcPatterns(bool backwards = false);
 
-  int ContainsUpperCase();
-  int ContainsLowerCase();
-  int CountSpecialChars();
-  void FindCommonPatterns();
-  void FindRepeatingChars();
-  void FindRepeatingPairs();
-  void FindAbcPatterns(bool backwards = false);
+    std::string get_pswd() const { return m_password; }
+    bool get_digit() const { return m_digit; }
+    bool get_l_case() const { return m_lower_case; }
+    bool get_u_case() const { return m_upper_case; }
+    int get_sp_chars() const { return m_num_sp_chars; }
+    std::string get_patterns() const;
+    int get_score() const;
 
-
-  Password(const std::string& password, std::size_t min_pattern_len = 4);
-  friend class Table;
+    Password(const std::string& password);
 };
 
-int has_digit(const std::string&);
+bool has_digit(const std::string&);
+bool has_u_case(const std::string&);
+bool has_l_case(const std::string&);
+int cnt_sp_chars(const std::string&);
 
 #endif // PASSWORD_H
