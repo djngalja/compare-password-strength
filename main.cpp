@@ -4,9 +4,10 @@
 
 std::vector<Password> get_input();
 
+
 int main() {
     std::vector<Password> input = get_input();
-    std::sort(input.begin(), input.end(), [](Password a, Password b){ return a.m_score > b.m_score; });
+    std::sort(input.begin(), input.end(), [](Password a, Password b){ return a.get_score() > b.get_score(); });
 
     Table tb;
     tb.add_column("Score", 5);
@@ -19,9 +20,9 @@ int main() {
     tb.add_column("Patterns", 30);
 
     for (const auto& pas : input) {
-        tb.add_row(pas.m_score, pas.m_password, pas.m_password.size(),
-            pas.m_count_special_chars, pas.m_digit, pas.m_lower_case,
-            pas.m_upper_case, pas.m_pattern_string);
+        tb.add_row(pas.get_score(), pas.get_pswd(), pas.get_pswd().size(),
+            pas.get_sp_chars(), pas.get_digit(), pas.get_l_case(),
+            pas.get_u_case(), pas.get_patterns());
     }
 
     tb.print_border();
@@ -32,6 +33,7 @@ int main() {
 
   return 0;
 }
+
 
 std::vector<Password> get_input() {
     std::vector<Password> input;
