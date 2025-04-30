@@ -72,23 +72,24 @@ void Password::FindCommonPatterns() {
 }
 
 //find such patterns as '1111', 'PPPPP', 'Aaaa', '____', etc.
-void Password::FindRepeatingChars() {
-  if (m_password.size() < 2) return;
-  for (std::size_t i=0; i<=m_password.size()-m_min_pattern_len; i++) {
-    std::string temp_string;
-    if (tolower(m_password[i]) == tolower(m_password[i+1])) {
-      temp_string.push_back(m_password[i]);
-      while (
-        i < m_password.size()-1
-        && tolower(m_password[i]) == tolower(m_password[i+1])
-      ) {
-        temp_string.push_back(m_password[i+1]);
-        i++;
-      }
+void find_repeat_chars(const std::string& str, std::size_t min_len, std::unordered_set<std::string>& patterns) {
+    if (str.size() == 1) { return; } // TODO
+    char prev_ch {str.front()};
+    std::string pat {prev_ch};
+    for (auto it = str.begin()+1; it != str.end(); ++it) {
+        if (tolower(*it) == tolower(prev_ch)) {
+            pat += *it;
+        } else {
+            if (pat.size() >= min_len) {
+                patterns.insert(pat);
+            }
+            pat = *it;
+        }
+        prev_ch = *it;
     }
-    if (temp_string.size() >= m_min_pattern_len)
-      m_pattern_set.insert(temp_string);
-  }
+    if (pat.size() >= min_len) {
+        patterns.insert(pat);
+    }
 }
 
 //find such patterns as '1212', 'cdcdcd', 'HAHahaha', etc.
@@ -167,7 +168,7 @@ Password::Password(const std::string& password): m_password(password) {
     m_num_sp_chars = cnt_sp_chars(password);
     if (m_password.size() >= m_min_pattern_len) {
         FindCommonPatterns();
-        FindRepeatingChars();
+        find_repeat_chars(password, m_min_pattern_len, m_pattern_set);
         FindRepeatingPairs();
         FindAbcPatterns();
         FindAbcPatterns(true);
