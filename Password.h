@@ -15,7 +15,6 @@ class Password {
     std::unordered_set<std::string> m_pattern_set {};
 public:
     void FindCommonPatterns();
-    void FindRepeatingChars();
     void FindRepeatingPairs();
     void FindAbcPatterns(bool backwards = false);
 
@@ -29,7 +28,7 @@ public:
 
     Password(const std::string& password);
 };
-
+void find_repeat_chars(const std::string&, std::size_t, std::unordered_set<std::string>&);
 bool has_digit(const std::string&);
 bool has_u_case(const std::string&);
 bool has_l_case(const std::string&);
