@@ -71,12 +71,12 @@ void Password::FindCommonPatterns() {
   }
 }
 
-//find such patterns as '1111', 'PPPPP', 'Aaaa', '____', etc.
+// Find such patterns as '1111', 'PPPPP', 'Aaaa', '____', etc.
 void find_repeat_chars(const std::string& str, std::size_t min_len, std::unordered_set<std::string>& patterns) {
     if (str.size() == 1) { return; } // TODO
     char prev_ch {str.front()};
     std::string pat {prev_ch};
-    for (auto it = str.begin()+1; it != str.end(); ++it) {
+    for (auto it = str.begin() + 1; it != str.end(); ++it) {
         if (tolower(*it) == tolower(prev_ch)) {
             pat += *it;
         } else {
@@ -92,67 +92,57 @@ void find_repeat_chars(const std::string& str, std::size_t min_len, std::unorder
     }
 }
 
-//find such patterns as '1212', 'cdcdcd', 'HAHahaha', etc.
-void Password::FindRepeatingPairs() {
-  if (m_password.size() < 4) return;
-  for (std::size_t i=0; i<=m_password.size()-m_min_pattern_len; i++) {
-    std::string temp_string;
-    if (
-      tolower(m_password[i]) == tolower(m_password[i+2])
-      && tolower(m_password[i+1]) == tolower(m_password[i+3])
-      && tolower(m_password[i]) != tolower(m_password[i+1])
-    ) {
-      temp_string.push_back(m_password[i]);
-      temp_string.push_back(m_password[i+1]);
-      while (
-        i <= m_password.size()-3
-        && tolower(m_password[i]) == tolower(m_password[i+2])
-        && tolower(m_password[i+1]) == tolower(m_password[i+3])
-      ) {
-        temp_string.push_back(m_password[i+2]);
-        temp_string.push_back(m_password[i+3]);
-        i += 2;
-      }
+// Find such patterns as '1212', 'cdcdcd', 'HAHahaha', etc.
+void find_repeat_pairs(const std::string& str, std::size_t min_len, std::unordered_set<std::string>& patterns) {
+    if (str.size() < 4) { return; } // TODO
+    for (std::size_t i = 0; i <= str.size() - min_len; i++) {
+        std::string pat {str[i], str[i + 1]};
+        if (tolower(str[i]) != tolower(str[i + 1])) {
+            while (tolower(str[i]) == tolower(str[i + 2])
+            && tolower(str[i + 1]) == tolower(str[i + 3])) {
+                pat += {str[i + 2], str[i + 3]};
+                i += 2;
+            }
+            if (pat.size() >= min_len) {
+                patterns.insert(pat);
+            }
+            i++;
         }
-        if (temp_string.size() >= m_min_pattern_len) {
-          m_pattern_set.insert(temp_string);
-          i++;
-        }
-  }
+    }
 }
 
-//find such patterns as 'aBcD', '23456' or 'dcba', '65432' if backwards is 'true'
-void Password::FindAbcPatterns(bool backwards) {
-  if (m_password.size() < 2) return;
-  int d = backwards? -1 : 1; //common difference
-  for (std::size_t i=0; i<=m_password.size()-m_min_pattern_len; i++) {
-    std::string temp_string;
-    if (
-      tolower(m_password[i]+d) == tolower(m_password[i+1])
-      && isalnum(m_password[i])
-    ) {
-      temp_string.push_back(m_password[i]);
-      while (
-        tolower(m_password[i]+d) == tolower(m_password[i+1])
-        && i < m_password.size()-1
-      ) {
-        temp_string.push_back(m_password[i+1]);
-        i++;
-      }
-   }
-   if (temp_string.size() >= m_min_pattern_len)
-     m_pattern_set.insert(temp_string);
-  }
+// Find such patterns as 'aBcD', '23456' or 'dcba', '65432' if backwards is 'true'
+void find_abc_patterns(const std::string& str, std::size_t min_len,
+                       std::unordered_set<std::string>& patterns, bool backwards) {
+    if (str.size() < 2) { return; } // TODO
+    int diff = backwards? -1 : 1; //common difference
+    char prev_ch {str.front()};
+    std::string pat {prev_ch};
+    for (auto it = str.begin() + 1; it != str.end(); ++it) {
+        if (isalnum(prev_ch) && tolower(prev_ch + diff) == tolower(*it)) {
+            pat += *it;
+        } else {
+            if (pat.size() >= min_len) {
+                patterns.insert(pat);
+            }
+            pat = *it;
+        }
+        prev_ch = *it;
+    }
+    if (pat.size() >= min_len) {
+        patterns.insert(pat);
+    }
 }
 
 std::string Password::get_patterns() const {
     std::string patterns;
+    if (m_pattern_set.empty()) {
+        return patterns;
+    }
     for(const auto& pat : m_pattern_set) {
         patterns += pat + ", ";
     }
-    if (!patterns.empty()) {
-        patterns.erase(patterns.size()-2, patterns.size());
-    }
+    patterns.erase(patterns.size()-2, patterns.size());
     return patterns;
 }
 
@@ -169,8 +159,8 @@ Password::Password(const std::string& password): m_password(password) {
     if (m_password.size() >= m_min_pattern_len) {
         FindCommonPatterns();
         find_repeat_chars(password, m_min_pattern_len, m_pattern_set);
-        FindRepeatingPairs();
-        FindAbcPatterns();
-        FindAbcPatterns(true);
+        find_repeat_pairs(password, m_min_pattern_len, m_pattern_set);
+        find_abc_patterns(password, m_min_pattern_len, m_pattern_set);
+        find_abc_patterns(password, m_min_pattern_len, m_pattern_set, true);
     }
 }
