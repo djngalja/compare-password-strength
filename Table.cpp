@@ -1,19 +1,21 @@
 #include "Table.h"
 
-void Table::add_column(const std::string& header, std::size_t width) {
-    std::size_t final_width = (header.size() > width) ? header.size() : width;
-    columns.push_back(Column{header, final_width});
-    if (table_width) { table_width++; };
-    table_width += final_width;
-    border = edge_style + std::string(table_width, hor_border_style) + edge_style + '\n';
+void Table::add_column(const std::string& header) {
+    columns.push_back(Column{header, header.size() + margin * 2});
 }
 
 void Table::add_row() {
-    // If the number of cells is less than the number of columns
+    // Add empty cells if the given number of cells is less than the number of columns
     if (temp_vec.size() < columns.size()) {
         std::size_t diff = columns.size() - temp_vec.size();
         while (diff--) {
-            temp_vec.push_back("");
+            temp_vec.push_back({});
+        }
+    }
+    // Update column width to fit its widest cell
+    for (std::size_t i = 0; i != temp_vec.size(); ++i) {
+        if (columns[i].width < temp_vec[i].size() + margin * 2) {
+            columns[i].width = temp_vec[i].size() + margin * 2;
         }
     }
     rows.push_back(temp_vec);
@@ -21,28 +23,33 @@ void Table::add_row() {
 }
 
 void Table::print_border() const {
+    std::string border {edge_style};
+    for (const auto& column : columns) {
+        border += std::string(column.width, hor_border_style) + edge_style;
+    }
+    border += '\n';
     std::cout << border;
 }
 
 void Table::print_headers() const {
     std::string headers;
     for (const auto& column : columns) {
-        headers += vert_border_style + std::string(column.width-column.header.size(), ' ') + column.header;
+        int left = (column.width - column.header.size()) / 2;
+        int right = column.width - column.header.size() - left;
+        headers += vert_border_style + std::string(left, ' ') + column.header + std::string(right, ' ');
     }
     headers += vert_border_style;
     headers += '\n';
     std::cout << headers;
 }
 
-void Table::print_rows() {
-    for (auto& row : rows) {
+void Table::print_rows() const {
+    for (const auto& row : rows) {
         std::string row_str;
-        for (std::size_t i=0; i<columns.size(); ++i) {
-            // If the width of a cell is greater than the width of its column
-            if (row[i].size() > columns[i].width) {
-                row[i].resize(columns[i].width);
-            }
-            row_str += vert_border_style + std::string(columns[i].width-row[i].size(), ' ') + row[i];
+        for (std::size_t i = 0; i < columns.size(); ++i) {
+            int left = (columns[i].width - row[i].size()) / 2;
+            int right = columns[i].width - row[i].size() - left;
+            row_str += vert_border_style + std::string(left, ' ') + row[i] + std::string(right, ' ');
         }
     row_str += vert_border_style;
     row_str += '\n';
