@@ -58,16 +58,13 @@ Prints out a **comparison table** with the following columns (sorted by score):
 The pattern search algorithm is case-insensitive.
 ## Sample input and output
 ### Example 1
-**Input:** `ADmINadmin PA$$w0rD1234 QWERTY007 password`<br />
+**Input:** `123123456 123456789 qwerty password 1111111 12345678`<br />
 **Output:**<br />
-![Comparison table 1](/readme_img/table1.jpg)
+![Comparison table 1](/readme_img/example-1.png)
 ### Example 2
-**Input:** `AbcdEf76543        3456ZYxW   `<br />
+**Input:** `Iloveyou          Qwertyuiop 1q2w3e4r5t     Dragon ashley1234_____`<br />
 **Output:**<br />
-![Comparison table 1](/readme_img/table2.jpg)
-### Example 3
-**Input:** `1111PasssworD    hahahaHA678 hi+++++bye 565656StoP____ `<br />
-**Output:**<br />
-![Comparison table 3](/readme_img/table3.jpg)
-### References
+![Comparison table 1](/readme_img/example-2.png)
+## References
 * NordPass. (n.d.). _Top 200 most common passwords._ https://nordpass.com/most-common-passwords-list/
+* O’Flaherty, K. (2019, April 21). _These are the world’s most hacked passwords -- is yours on the list?_ Forbes. https://www.forbes.com/sites/kateoflahertyuk/2019/04/21/these-are-the-worlds-most-hacked-passwords-is-yours-on-the-list/?sh=51c56429289c/
