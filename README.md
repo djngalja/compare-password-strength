@@ -2,13 +2,13 @@
 A C++ code that evaluates and compares the strength of your passwords based on various criteria, including **length**, presence of **digits**, **uppercase**, **lowercase** and **special characters** as well as their **predictable combinations**. <br /><br />
 _100% C++, no AI tools used._
 ## Input and output
-Takes a **string of passwords** separated by white spaces. <br /><br />
-Prints out a **comparison table** with the following columns (sorted by score):
+__>>__ Takes a **string of passwords** separated by white spaces. <br />
+__<<__ Prints out a **comparison table** with the following columns (sorted by score):
 
 <table>
   <tr>
     <td> <b>Score</b> </td>
-    <td>Password strength score calculated based on the data in the table</td>
+    <td>Password strength score calculated based on data in the table</td>
   </tr>
   
   <tr>
@@ -23,7 +23,7 @@ Prints out a **comparison table** with the following columns (sorted by score):
 
   <tr>
     <td><b>SP Chars</b></td>
-    <td>Number of special (not alphanumeric) characters</td>
+    <td>Number of special (non-alphanumeric) characters</td>
   </tr>
 
   <tr>
@@ -43,19 +43,20 @@ Prints out a **comparison table** with the following columns (sorted by score):
 
   <tr>
     <td><b>Patters</b></td>
-    <td>Presence of common password patterns</td>
+    <td>Common password patterns found</td>
   </tr>
   
 </table>
 
 ## Common password patterns
+The password strength score is negatively affected by the presence of the following predictable patterns:
 * Repeated characters (`aaAa`, `----`, `1111`)
 * Repeated pairs of characters (`abABab`, `1212`)
-* Consecutive numbers (`12345`, `7654`)
-* Letters in (reverse) alphabetical order (`abcd`, `Dcba`)
-* Common words or phrases (`WeLcoMe`, `computer`)
+* Sequential numbers (`12345`, `7654`)
+* Sequential letters (`abcd`, `Dcba`)
+* Common words, including keyboard patterns (`WelcoMe`, `Qwerty`)
   
-The pattern search algorithm is case-insensitive.
+All pattern search algorithms are __case-insensitive__, and the minimum pattern length is set to __{4}__.
 ## Sample input and output
 ### Example 1
 **Input:** `123123456 123456789 qwerty password 1111111 12345678`<br />
