@@ -59,6 +59,8 @@ void pswd::find_common_patterns(const std::string& str, std::set<std::string>& p
 
 // Find such patterns as '1111', 'PPPPP', 'Aaaa', '____', etc.
 void pswd::find_repeat_chars(const std::string& str, std::size_t min_len, std::set<std::string>& patterns) {
+    if (str.size() < 2) { return; }
+    if (min_len < 2) { return; }
     char prev_ch {str.front()};
     std::string pat {prev_ch};
     for (auto it = str.begin() + 1; it != str.end(); ++it) {
@@ -79,6 +81,8 @@ void pswd::find_repeat_chars(const std::string& str, std::size_t min_len, std::s
 
 // Find such patterns as '1212', 'cdcdcd', 'HAHahaha', etc.
 void pswd::find_repeat_pairs(const std::string& str, std::size_t min_len, std::set<std::string>& patterns) {
+    if (str.size() < 4) { return; }
+    if (min_len < 4) { return; }
     for (std::size_t i = 0; i <= str.size() - min_len; i++) {
         std::string pat {str[i], str[i + 1]};
         if (tolower(str[i]) != tolower(str[i + 1])) {
@@ -90,7 +94,6 @@ void pswd::find_repeat_pairs(const std::string& str, std::size_t min_len, std::s
             if (pat.size() >= min_len) {
                 patterns.insert(pat);
             }
-            i++;
         }
     }
 }
@@ -98,6 +101,8 @@ void pswd::find_repeat_pairs(const std::string& str, std::size_t min_len, std::s
 // Find such patterns as 'aBcD', '23456' or 'dcba', '65432' if backwards is 'true'
 void pswd::find_abc_patterns(const std::string& str, std::size_t min_len,
                        std::set<std::string>& patterns, bool backwards) {
+    if (str.size() < 2) { return; }
+    if (min_len < 2) { return; }
     int diff = backwards? -1 : 1; //common difference
     char prev_ch {str.front()};
     std::string pat {prev_ch};
