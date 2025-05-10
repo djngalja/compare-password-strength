@@ -67,5 +67,6 @@ All pattern search algorithms are __case-insensitive__, and the minimum pattern 
 **Output:**<br />
 ![Comparison table 1](/readme_img/example-2.png)
 ## References
+* Gil, P. (2025, January 17). _The surprising mistakes that make your passwords vulnerable._ Lifewire. https://www.lifewire.com/strong-password-examples-2483118
 * NordPass. (n.d.). _Top 200 most common passwords._ https://nordpass.com/most-common-passwords-list/
 * O’Flaherty, K. (2019, April 21). _These are the world’s most hacked passwords -- is yours on the list?_ Forbes. https://www.forbes.com/sites/kateoflahertyuk/2019/04/21/these-are-the-worlds-most-hacked-passwords-is-yours-on-the-list/?sh=51c56429289c/
