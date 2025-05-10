@@ -42,5 +42,6 @@ namespace pswd {
 }
 
 std::vector<pswd::Password> get_input();
+void pswd_test();
 
 #endif // PASSWORD_H
