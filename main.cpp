@@ -3,6 +3,7 @@
 
 
 int main() {
+    //pswd_test();
     std::vector<pswd::Password> input = get_input();
 
     std::sort(input.begin(), input.end(),
