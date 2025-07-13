@@ -9,7 +9,7 @@ _100% C++, no AI tools used._
 ```
 g++ -o main main.cpp Password.cpp Table.cpp
 ```
-4. Run the compiled program
+3. Run the compiled program
 ```
 ./main
 ```
