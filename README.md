@@ -1,6 +1,19 @@
 # Compare password strength
 A C++ code that evaluates and compares the strength of your passwords based on various criteria, including **length**, presence of **digits**, **uppercase**, **lowercase** and **special characters** as well as their **predictable combinations**. <br /><br />
 _100% C++, no AI tools used._
+
+## Getting started
+
+1. [Clone the directory](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
+2. Compile the program
+```
+g++ -o main main.cpp Password.cpp Table.cpp
+```
+4. Run the compiled program
+```
+./main
+```
+
 ## Input and output
 __>>__ Takes a **string of passwords** separated by white spaces. <br />
 __<<__ Prints out a **comparison table** with the following columns (sorted by score):
